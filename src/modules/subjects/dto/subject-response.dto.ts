@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AssignmentStatus } from '@/src/common/enums/assignment.enum';
 import { HtAssignment } from '@/src/modules/assignments/entities/ht-assignment.entity';
+import { DateUtils } from '@/src/common/utils/date.utils';
 
 /**
  * Assignment counts for a subject
@@ -135,7 +136,7 @@ export class SubjectResponseDto {
       dto.recentAssignments = recentAssignments.map((a) => ({
         id: a.id,
         title: a.title,
-        date: a.date.toISOString(),
+        date: DateUtils.toLocalString(a.date),
         status: a.status,
       }));
     }

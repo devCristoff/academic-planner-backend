@@ -3,6 +3,7 @@ import { AssignmentRepository } from '@/src/common/repositories';
 import { AssignmentStatus } from '@/src/common/enums/assignment.enum';
 import { HtAssignment } from '@/src/modules/assignments/entities/ht-assignment.entity';
 import { BoardCardDto, BoardResponseDto } from '@/src/modules/board/dto/board-response.dto';
+import { DateUtils } from '@/src/common/utils/date.utils';
 
 /**
  * Board service
@@ -52,7 +53,7 @@ export class BoardService {
     const card = new BoardCardDto();
     card.id = assignment.id;
     card.title = assignment.title;
-    card.date = assignment.date.toISOString();
+    card.date = DateUtils.toLocalString(assignment.date);
     card.url = assignment.url;
     card.isManual = assignment.canvasId < 0;
     card.types = (assignment.typeLinks ?? []).map((t) => t.defTypeId);

@@ -4,16 +4,29 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from '@/src/app.module';
 import { HttpExceptionFilter } from '@/src/common/filters/http-exception.filter';
+import { DateTimeInterceptor } from '@/src/common/interceptors/datetime.interceptor';
 import { RequestLoggingInterceptor } from '@/src/common/interceptors/request-logging.interceptor';
 import { ResponseTransformInterceptor } from '@/src/common/interceptors/response-transform.interceptor';
+import { DateUtils } from '@/src/common/utils/date.utils';
 
 async function bootstrap() {
-  console.log('Date.toString():', new Date().toString());
-  console.log('Date.toISOString():', new Date().toISOString());
-  console.log('Current Timezone:', Intl.DateTimeFormat().resolvedOptions().timeZone);
+  // process.env.TZ = process.env.TZ ?? 'America/Santo_Domingo';
 
+  // const prototype = Date.prototype as Date & { __localIsoOverride?: boolean };
+  // if (!prototype.__localIsoOverride) {
+  //   // eslint-disable-next-line no-extend-native
+  //   Date.prototype.toISOString = function toISOStringLocal(): string {
+  //     return DateUtils.toLocalString(this);
+  //   };
+  //   prototype.__localIsoOverride = true;
+  // }
 
   const app = await NestFactory.create(AppModule);
+
+  app.use((_req, res, next) => {
+    res.setHeader('Date', DateUtils.toHttpDate());
+    next();
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -26,6 +39,7 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(
     new RequestLoggingInterceptor(),
+    new DateTimeInterceptor(),
     new ResponseTransformInterceptor(),
   );
   app.useGlobalFilters(new HttpExceptionFilter());

@@ -22,8 +22,6 @@ export class AcademicTermsService {
       .orderBy('term.validFrom', 'DESC')
       .getMany();
 
-    console.log('Fetched academic terms:', terms);
-
     return terms.map((t) => AcademicTermResponseDto.fromEntity(t));
   }
 

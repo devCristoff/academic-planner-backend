@@ -7,6 +7,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { DtUser } from '@/src/modules/auth/entities/dt-user.entity';
+import { DateTimeTransformer } from '@/src/common/transformers/datetime.transformer';
 
 @Entity({ name: 'dt_user_lms_token' })
 export class DtUserLmsToken {
@@ -22,10 +23,18 @@ export class DtUserLmsToken {
   @Column({ type: 'text', name: 'token' })
   token!: string;
 
-  @Column({ type: 'datetime', name: 'valid_from' })
+  @Column({
+    type: 'datetime',
+    name: 'valid_from',
+    transformer: new DateTimeTransformer(),
+  })
   validFrom!: Date;
 
-  @Column({ type: 'datetime', name: 'valid_to' })
+  @Column({
+    type: 'datetime',
+    name: 'valid_to',
+    transformer: new DateTimeTransformer(),
+  })
   validTo!: Date;
 
   @Column({ type: 'varchar', length: 50, name: 'status' })

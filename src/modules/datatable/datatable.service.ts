@@ -8,6 +8,7 @@ import {
   DatatableResponseDto,
   DatatableRowDto,
 } from '@/src/modules/datatable/dto/datatable-response.dto';
+import { DateUtils } from '@/src/common/utils/date.utils';
 
 /**
  * Datatable service
@@ -71,7 +72,7 @@ export class DatatableService {
     const row = new DatatableRowDto();
     row.id = assignment.id;
     row.title = assignment.title;
-    row.date = assignment.date.toISOString();
+    row.date = DateUtils.toLocalString(assignment.date);
     row.status = assignment.status;
     row.url = assignment.url;
     row.isManual = assignment.canvasId < 0;

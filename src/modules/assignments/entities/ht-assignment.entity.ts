@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { HtSubject } from '@/src/modules/subjects/entities/ht-subject.entity';
 import { HtAssignmentHasDefType } from '@/src/modules/assignments/entities/ht-assignment-has-def-type.entity';
+import { DateTimeTransformer } from '@/src/common/transformers/datetime.transformer';
 
 @Entity({ name: 'ht_assignment' })
 export class HtAssignment {
@@ -27,7 +28,7 @@ export class HtAssignment {
   @Column({ type: 'longtext', nullable: true, name: 'description' })
   description!: string | null;
 
-  @Column({ type: 'datetime', name: 'date' })
+  @Column({ type: 'datetime', name: 'date', transformer: new DateTimeTransformer() })
   date!: Date;
 
   @Column({ type: 'text', nullable: true, name: 'url' })

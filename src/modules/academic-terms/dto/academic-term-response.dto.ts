@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AcademicTermStatus } from '@/src/common/enums/academic-term.enum';
 import { DtAcademicTerm } from '@/src/modules/academic-terms/entities/dt-academic-term.entity';
+import { DateUtils } from '@/src/common/utils/date.utils';
 
 /**
  * Academic term details response
@@ -43,14 +44,14 @@ export class AcademicTermResponseDto {
   year!: number;
 
   @ApiProperty({
-    description: 'Term validity start date in ISO format',
-    example: '2024-09-01T00:00:00.000Z',
+    description: 'Term validity start date in local format',
+    example: '2024-09-01 00:00:00',
   })
   validFrom!: string;
 
   @ApiProperty({
-    description: 'Term validity end date in ISO format',
-    example: '2024-12-31T23:59:59.999Z',
+    description: 'Term validity end date in local format',
+    example: '2024-12-31 23:59:59',
   })
   validTo!: string;
 
@@ -72,8 +73,8 @@ export class AcademicTermResponseDto {
     dto.since = entity.definition?.since ?? 1;
     dto.until = entity.definition?.until ?? 12;
     dto.year = Number(entity.year);
-    dto.validFrom = entity.validFrom.toISOString();
-    dto.validTo = entity.validTo.toISOString();
+    dto.validFrom = DateUtils.toLocalString(entity.validFrom);
+    dto.validTo = DateUtils.toLocalString(entity.validTo);
     dto.status = entity.status;
     return dto;
   }

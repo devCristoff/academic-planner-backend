@@ -15,6 +15,7 @@ import { UpdateAssignmentStatusDto } from '@/src/modules/assignments/dto/update-
 import { AssignmentType } from '@/src/common/enums/assignment.enum';
 import { HtAssignmentHasDefType } from '@/src/modules/assignments/entities/ht-assignment-has-def-type.entity';
 import { HtAssignment } from '@/src/modules/assignments/entities/ht-assignment.entity';
+import { DateUtils } from '@/src/common/utils/date.utils';
 
 const EDITABLE_STATUSES: ReadonlySet<AssignmentStatus> = new Set(Object.values(AssignmentStatus));
 
@@ -213,7 +214,7 @@ export class AssignmentsService {
     dto.id = entity.id;
     dto.title = entity.title;
     dto.description = entity.description;
-    dto.date = entity.date.toISOString();
+    dto.date = DateUtils.toLocalString(entity.date);
     dto.url = entity.url;
     dto.status = entity.status;
     dto.types = types;

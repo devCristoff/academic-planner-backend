@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { DtUser } from '@/src/modules/auth/entities/dt-user.entity';
+import { DateTimeTransformer } from '@/src/common/transformers/datetime.transformer';
 
 @Entity({ name: 'dt_user_otp' })
 export class DtUserOtp {
@@ -19,13 +20,26 @@ export class DtUserOtp {
   @Column({ type: 'varchar', length: 64, name: 'code' })
   code!: string;
 
-  @Column({ type: 'datetime', name: 'expires_at' })
+  @Column({
+    type: 'datetime',
+    name: 'expires_at',
+    transformer: new DateTimeTransformer(),
+  })
   expiresAt!: Date;
 
-  @Column({ type: 'datetime', nullable: true, name: 'used_at' })
+  @Column({
+    type: 'datetime',
+    nullable: true,
+    name: 'used_at',
+    transformer: new DateTimeTransformer(),
+  })
   usedAt!: Date | null;
 
-  @CreateDateColumn({ type: 'datetime', name: 'created_at' })
+  @CreateDateColumn({
+    type: 'datetime',
+    name: 'created_at',
+    transformer: new DateTimeTransformer(),
+  })
   createdAt!: Date;
 
   @ManyToOne(() => DtUser)

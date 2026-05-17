@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { AppException } from '@/src/common/exceptions/app.exception';
+import { DateUtils } from '@/src/common/utils/date.utils';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -18,7 +19,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    const timestamp = new Date().toISOString();
+    const timestamp = DateUtils.now();
 
     if (exception instanceof AppException) {
       const statusCode = exception.getStatus();

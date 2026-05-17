@@ -55,8 +55,8 @@ export class AssignmentResponseDto {
   description!: string | null;
 
   @ApiProperty({
-    description: 'Due date in ISO format',
-    example: '2024-10-15T23:59:59.000Z',
+    description: 'Due date in local format',
+    example: '2024-10-15 23:59:59',
   })
   date!: string;
 

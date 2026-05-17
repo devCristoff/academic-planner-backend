@@ -7,6 +7,7 @@ import {
   type Relation,
 } from 'typeorm';
 import { DefAcademicTerm } from '@/src/modules/academic-terms/entities/def-academic-term.entity';
+import { DateTimeTransformer } from '@/src/common/transformers/datetime.transformer';
 
 @Entity({ name: 'dt_academic_term' })
 export class DtAcademicTerm {
@@ -19,10 +20,18 @@ export class DtAcademicTerm {
   @Column({ type: 'year', name: 'year' })
   year!: number;
 
-  @Column({ type: 'datetime', name: 'valid_from' })
+  @Column({
+    type: 'datetime',
+    name: 'valid_from',
+    transformer: new DateTimeTransformer(),
+  })
   validFrom!: Date;
 
-  @Column({ type: 'datetime', name: 'valid_to' })
+  @Column({
+    type: 'datetime',
+    name: 'valid_to',
+    transformer: new DateTimeTransformer(),
+  })
   validTo!: Date;
 
   @Column({ type: 'varchar', length: 50, name: 'status' })

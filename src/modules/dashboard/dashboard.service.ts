@@ -11,6 +11,7 @@ import {
   DashboardSubjectDto,
   DashboardTermDto,
 } from '@/src/modules/dashboard/dto/dashboard-response.dto';
+import { DateUtils } from '@/src/common/utils/date.utils';
 
 /**
  * Dashboard service
@@ -57,8 +58,8 @@ export class DashboardService {
     termDto.id = term.id;
     termDto.alias = term.definition?.alias ?? term.defAcademicTermId;
     termDto.year = Number(term.year);
-    termDto.validFrom = term.validFrom.toISOString();
-    termDto.validTo = term.validTo.toISOString();
+    termDto.validFrom = DateUtils.toLocalString(term.validFrom);
+    termDto.validTo = DateUtils.toLocalString(term.validTo);
     response.term = termDto;
 
     response.subjects = subjectsWithCounts.map((r) => {
@@ -95,7 +96,7 @@ export class DashboardService {
       id: a.id,
       title: a.title,
       description: a.description,
-      date: a.date.toISOString(),
+      date: DateUtils.toLocalString(a.date),
       url: a.url,
       status: a.status,
       isManual: a.canvasId < 0,
