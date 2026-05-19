@@ -28,7 +28,7 @@ export class SubjectsController {
 
   @ApiOperation({ summary: 'List subjects for current user/term with assignment counts' })
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ description: 'Subjects list' })
+  @ApiResponse({ status: 200, description: 'Subjects list', type: SubjectResponseDto, isArray: true })
   @Get()
   async list(
     @CurrentUser() user: CurrentUserPayload,
@@ -38,7 +38,7 @@ export class SubjectsController {
 
   @ApiOperation({ summary: 'Get a single subject with counts and recent assignments' })
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ description: 'Subject detail' })
+  @ApiResponse({ status: 200, description: 'Subject detail', type: SubjectResponseDto })
   @Get(':id')
   async getOne(
     @CurrentUser() user: CurrentUserPayload,
@@ -49,7 +49,7 @@ export class SubjectsController {
 
   @ApiOperation({ summary: 'Update a subject icon/custom name' })
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ description: 'Updated subject' })
+  @ApiResponse({ status: 200, description: 'Updated subject', type: SubjectResponseDto })
   @Patch(':id')
   async update(
     @CurrentUser() user: CurrentUserPayload,

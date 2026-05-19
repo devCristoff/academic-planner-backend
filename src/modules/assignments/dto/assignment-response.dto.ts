@@ -97,6 +97,7 @@ export class AssignmentResponseDto {
   @ApiProperty({
     description: 'Subject this assignment belongs to',
     type: AssignmentSubjectDto,
+    example: { id: 42, name: 'Advanced Algorithms', icon: '📚', customName: 'Algo II' },
   })
   subject!: AssignmentSubjectDto;
 }

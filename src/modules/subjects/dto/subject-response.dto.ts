@@ -94,6 +94,7 @@ export class SubjectResponseDto {
   @ApiProperty({
     description: 'Assignment counts for this subject',
     type: SubjectCountsDto,
+    example: { todo: 5, inProgress: 2, done: 8, total: 15 },
   })
   counts!: SubjectCountsDto;
 
@@ -102,6 +103,7 @@ export class SubjectResponseDto {
     type: [RecentAssignmentDto],
     isArray: true,
     required: false,
+    example: [{ id: 156, title: 'Implement QuickSort Algorithm', date: '2024-10-15 23:59:59', status: 'DONE' }],
   })
   recentAssignments?: RecentAssignmentDto[];
 

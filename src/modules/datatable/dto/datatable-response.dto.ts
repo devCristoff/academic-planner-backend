@@ -89,6 +89,7 @@ export class DatatableRowDto {
   @ApiProperty({
     description: 'Subject information',
     type: DatatableSubjectDto,
+    example: { id: 42, name: 'Advanced Algorithms', icon: '📚', customName: 'Algo II' },
   })
   subject!: DatatableSubjectDto;
 }
@@ -100,6 +101,7 @@ export class DatatableResponseDto {
   @ApiProperty({
     description: 'Array of assignment rows',
     type: [DatatableRowDto],
+    example: [{ id: 156, title: 'Implement QuickSort Algorithm', date: '2024-10-15 23:59:59', status: 'TO_DO', url: null, isOverdue: false, isManual: false, types: ['QUIZ'], subject: { id: 42, name: 'Advanced Algorithms', icon: '📚', customName: 'Algo II' } }],
   })
   data!: DatatableRowDto[];
 

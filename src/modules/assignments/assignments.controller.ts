@@ -33,7 +33,7 @@ export class AssignmentsController {
 
   @ApiOperation({ summary: 'List assignments for current user/term with optional filters' })
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ description: 'Assignments list' })
+  @ApiResponse({ status: 200, description: 'Assignments list', type: AssignmentResponseDto, isArray: true })
   @Get()
   async list(
     @CurrentUser() user: CurrentUserPayload,
@@ -48,7 +48,7 @@ export class AssignmentsController {
 
   @ApiOperation({ summary: 'Get assignment detail' })
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ description: 'Assignment detail' })
+  @ApiResponse({ status: 200, description: 'Assignment detail', type: AssignmentResponseDto })
   @Get(':id')
   async getOne(
     @CurrentUser() user: CurrentUserPayload,
@@ -59,7 +59,7 @@ export class AssignmentsController {
 
   @ApiOperation({ summary: 'Create a manual assignment' })
   @HttpCode(HttpStatus.CREATED)
-  @ApiResponse({ description: 'Created assignment' })
+  @ApiResponse({ status: 201, description: 'Created assignment', type: AssignmentResponseDto })
   @Post()
   async create(
     @CurrentUser() user: CurrentUserPayload,
@@ -74,7 +74,7 @@ export class AssignmentsController {
 
   @ApiOperation({ summary: 'Update assignment status (TO_DO/IN_PROGRESS/DONE only)' })
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ description: 'Updated assignment' })
+  @ApiResponse({ status: 200, description: 'Updated assignment', type: AssignmentResponseDto })
   @Patch(':id/status')
   async updateStatus(
     @CurrentUser() user: CurrentUserPayload,
@@ -91,7 +91,7 @@ export class AssignmentsController {
 
   @ApiOperation({ summary: 'Edit a manual assignment (canvas_id < 0 only)' })
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ description: 'Updated assignment' })
+  @ApiResponse({ status: 200, description: 'Updated assignment', type: AssignmentResponseDto })
   @Patch(':id')
   async update(
     @CurrentUser() user: CurrentUserPayload,

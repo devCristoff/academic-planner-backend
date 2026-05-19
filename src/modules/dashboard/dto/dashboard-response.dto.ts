@@ -12,7 +12,7 @@ export class DashboardTermDto {
   id!: number;
 
   @ApiProperty({
-    description: 'Term alias (e.g., "Fall", "Spring")',
+    description: 'Term alias (e.g., "Fall", ""',
     example: 'Fall 2024',
   })
   alias!: string;
@@ -97,6 +97,7 @@ export class DashboardSubjectDto {
   @ApiProperty({
     description: 'Assignment counts for this subject',
     type: DashboardSubjectCountsDto,
+    example: { todo: 5, inProgress: 2, done: 12, total: 19 },
   })
   counts!: DashboardSubjectCountsDto;
 }
@@ -219,6 +220,7 @@ export class DashboardAssignmentDto {
   @ApiProperty({
     description: 'Subject this assignment belongs to',
     type: DashboardAssignmentSubjectDto,
+    example: { id: 42, name: 'Advanced Algorithms', icon: '📚', customName: 'Algo II' },
   })
   subject!: DashboardAssignmentSubjectDto;
 }
@@ -230,30 +232,35 @@ export class DashboardResponseDto {
   @ApiProperty({
     description: 'Current academic term information',
     type: DashboardTermDto,
+    example: { id: 1, alias: 'First Term', year: 2024, validFrom: '2024-01-05 00:00:00', validTo: '2024-04-30 23:59:59' },
   })
   term!: DashboardTermDto;
 
   @ApiProperty({
     description: 'List of subjects with assignment counts',
     type: [DashboardSubjectDto],
+    example: [{ id: 42, name: 'Advanced Algorithms', icon: '📚', customName: 'Algo II', counts: { todo: 5, inProgress: 2, done: 8, total: 15 } }],
   })
   subjects!: DashboardSubjectDto[];
 
   @ApiProperty({
     description: 'Assignments due in next 7 days (not completed)',
     type: [DashboardAssignmentDto],
+    example: [{ id: 156, title: 'Implement QuickSort Algorithm', description: null, date: '2024-10-15 23:59:59', url: null, status: 'TO_DO', isOverdue: false, isManual: false, types: ['QUIZ'], subject: { id: 42, name: 'Advanced Algorithms', icon: '📚', customName: 'Algo II' } }],
   })
   upcoming!: DashboardAssignmentDto[];
 
   @ApiProperty({
     description: 'Overdue assignments (not completed)',
     type: [DashboardAssignmentDto],
+    example: [],
   })
   overdue!: DashboardAssignmentDto[];
 
   @ApiProperty({
     description: 'Overall progress statistics',
     type: DashboardProgressDto,
+    example: { total: 47, done: 23, percentage: 49 },
   })
   progress!: DashboardProgressDto;
 }

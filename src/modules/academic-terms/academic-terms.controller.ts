@@ -10,7 +10,7 @@ export class AcademicTermsController {
 
   @ApiOperation({ summary: 'List all academic terms (joined with definition)' })
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ description: 'Academic terms list' })
+  @ApiResponse({ status: 200, description: 'Academic terms list', type: AcademicTermResponseDto, isArray: true })
   @Get()
   async listAll(): Promise<AcademicTermResponseDto[]> {
     return this.academicTermsService.listAll();
@@ -18,7 +18,7 @@ export class AcademicTermsController {
 
   @ApiOperation({ summary: 'Get current active academic term' })
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ description: 'Current term' })
+  @ApiResponse({ status: 200, description: 'Current term', type: AcademicTermResponseDto })
   @Get('current')
   async getCurrent(): Promise<AcademicTermResponseDto> {
     return this.academicTermsService.getCurrent();

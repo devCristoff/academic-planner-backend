@@ -81,6 +81,7 @@ export class BoardCardDto {
   @ApiProperty({
     description: 'Subject this assignment belongs to',
     type: BoardSubjectDto,
+    example: { id: 42, name: 'Advanced Algorithms', icon: '📚', customName: 'Algo II' },
   })
   subject!: BoardSubjectDto;
 }
@@ -92,18 +93,21 @@ export class BoardResponseDto {
   @ApiProperty({
     description: 'Assignments with TO_DO status',
     type: [BoardCardDto],
+    example: [{ id: 156, title: 'Implement QuickSort Algorithm', date: '2024-10-15 23:59:59', url: null, isOverdue: false, isManual: false, types: ['QUIZ'], subject: { id: 42, name: 'Advanced Algorithms', icon: '📚', customName: 'Algo II' } }],
   })
   todo!: BoardCardDto[];
 
   @ApiProperty({
     description: 'Assignments with IN_PROGRESS status',
     type: [BoardCardDto],
+    example: [],
   })
   inProgress!: BoardCardDto[];
 
   @ApiProperty({
     description: 'Assignments with DONE status',
     type: [BoardCardDto],
+    example: [],
   })
   done!: BoardCardDto[];
 }

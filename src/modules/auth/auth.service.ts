@@ -39,8 +39,11 @@ export class AuthService {
     dtUserOtp.dtUserId = user.id;
     dtUserOtp.code = hashedOtp;
     
+    const createdAt = new Date();
+    dtUserOtp.createdAt = createdAt;
+
     // Set expiry to 10 minutes from now
-    const expiresAt = new Date();
+    const expiresAt = new Date(createdAt);
     expiresAt.setMinutes(expiresAt.getMinutes() + 10);
     dtUserOtp.expiresAt = expiresAt;
 

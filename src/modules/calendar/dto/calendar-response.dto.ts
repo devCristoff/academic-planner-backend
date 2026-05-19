@@ -76,6 +76,7 @@ export class CalendarEntryDto {
   @ApiProperty({
     description: 'Subject this assignment belongs to',
     type: CalendarSubjectDto,
+    example: { id: 42, name: 'Advanced Algorithms', icon: '📚', customName: 'Algo II' },
   })
   subject!: CalendarSubjectDto;
 }

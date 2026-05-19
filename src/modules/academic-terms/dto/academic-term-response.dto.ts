@@ -15,25 +15,25 @@ export class AcademicTermResponseDto {
 
   @ApiProperty({
     description: 'Term definition identifier (maps to definition)',
-    example: 'FALL',
+    example: 'FIRST_TERM',
   })
   defAcademicTermId!: string;
 
   @ApiProperty({
     description: 'Term alias (e.g., semester name)',
-    example: 'Fall 2024',
+    example: 'First Term',
   })
   alias!: string;
 
   @ApiProperty({
     description: 'Term start month (1-12)',
-    example: 9,
+    example: 1,
   })
   since!: number;
 
   @ApiProperty({
     description: 'Term end month (1-12)',
-    example: 12,
+    example: 4,
   })
   until!: number;
 
@@ -45,13 +45,13 @@ export class AcademicTermResponseDto {
 
   @ApiProperty({
     description: 'Term validity start date in local format',
-    example: '2024-09-01 00:00:00',
+    example: '2024-01-05 00:00:00',
   })
   validFrom!: string;
 
   @ApiProperty({
     description: 'Term validity end date in local format',
-    example: '2024-12-31 23:59:59',
+    example: '2024-04-30 23:59:59',
   })
   validTo!: string;
 

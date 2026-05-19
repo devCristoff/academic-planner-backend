@@ -18,7 +18,7 @@ export class DatatableController {
 
   @ApiOperation({ summary: 'Get paginated/sorted datatable rows' })
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ description: 'Datatable payload' })
+  @ApiResponse({ status: 200, description: 'Datatable payload', type: DatatableResponseDto })
   @Get()
   async getDatatable(
     @CurrentUser() user: CurrentUserPayload,

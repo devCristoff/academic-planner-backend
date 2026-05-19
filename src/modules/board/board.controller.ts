@@ -17,7 +17,7 @@ export class BoardController {
 
   @ApiOperation({ summary: 'Get Kanban board columns (todo/inProgress/done)' })
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ description: 'Board payload' })
+  @ApiResponse({ status: 200, description: 'Board payload', type: BoardResponseDto })
   @Get()
   async getBoard(
     @CurrentUser() user: CurrentUserPayload,

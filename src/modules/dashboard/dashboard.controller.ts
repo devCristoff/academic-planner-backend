@@ -17,7 +17,7 @@ export class DashboardController {
 
   @ApiOperation({ summary: 'Get dashboard summary' })
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ description: 'Dashboard payload' })
+  @ApiResponse({ status: 200, description: 'Dashboard payload', type: DashboardResponseDto })
   @Get()
   async getDashboard(
     @CurrentUser() user: CurrentUserPayload,
