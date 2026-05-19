@@ -9,7 +9,6 @@ import { AuthModule } from '@/src/modules/auth/auth.module';
 import { BoardModule } from '@/src/modules/board/board.module';
 import { CalendarModule } from '@/src/modules/calendar/calendar.module';
 import { DashboardModule } from '@/src/modules/dashboard/dashboard.module';
-import { DatatableModule } from '@/src/modules/datatable/datatable.module';
 import { SubjectsModule } from '@/src/modules/subjects/subjects.module';
 
 @Module({
@@ -26,7 +25,6 @@ import { SubjectsModule } from '@/src/modules/subjects/subjects.module';
     AssignmentsModule,
     BoardModule,
     CalendarModule,
-    DatatableModule,
     DashboardModule,
   ],
 })
