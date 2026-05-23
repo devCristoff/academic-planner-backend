@@ -5,6 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import type { SignOptions } from 'jsonwebtoken';
 import { CommonModule } from '@/src/common/common.module';
+import { AcademicTermsModule } from '@/src/modules/academic-terms/academic-terms.module';
 import { AuthController } from '@/src/modules/auth/auth.controller';
 import { AuthService } from '@/src/modules/auth/auth.service';
 import { DtUser } from '@/src/modules/auth/entities/dt-user.entity';
@@ -21,6 +22,7 @@ import { JwtStrategy } from '@/src/modules/auth/strategies/jwt.strategy';
 @Module({
   imports: [
     CommonModule,
+    AcademicTermsModule,
     TypeOrmModule.forFeature([DtUser, DtUserOtp]),
     PassportModule,
     JwtModule.registerAsync({

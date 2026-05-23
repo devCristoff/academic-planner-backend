@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { randomInt, createHash } from 'crypto';
 import { AppException } from '@/src/common/exceptions/app.exception';
 import { MailService } from '@/src/common/services/mail.service';
+import { AcademicTermsService } from '@/src/modules/academic-terms/academic-terms.service';
 import { RequestOtpDto } from '@/src/modules/auth/dto/request-otp.dto';
 import { VerifyOtpDto } from '@/src/modules/auth/dto/verify-otp.dto';
 import { DtUser } from '@/src/modules/auth/entities/dt-user.entity';
@@ -19,6 +20,7 @@ export class AuthService {
     private readonly otpRepository: Repository<DtUserOtp>,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
+    private readonly academicTermsService: AcademicTermsService,
   ) {}
 
   async requestOtp(body: RequestOtpDto): Promise<{ message: string } | null> {
@@ -88,9 +90,11 @@ export class AuthService {
     latestOtp.usedAt = now;
     await this.otpRepository.save(latestOtp);
 
+    const currentTerm = await this.academicTermsService.getCurrent();
+
     const accessToken = await this.jwtService.signAsync({
-      dt_user_id: user.id,
-      email: user.email,
+      sub: user.id,
+      termId: currentTerm.id,
     });
 
     return { accessToken };

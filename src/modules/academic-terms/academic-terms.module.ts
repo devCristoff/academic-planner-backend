@@ -9,6 +9,6 @@ import { DtAcademicTerm } from '@/src/modules/academic-terms/entities/dt-academi
   imports: [TypeOrmModule.forFeature([DtAcademicTerm, DefAcademicTerm])],
   controllers: [AcademicTermsController],
   providers: [AcademicTermsService],
-  exports: [TypeOrmModule],
+  exports: [AcademicTermsService, TypeOrmModule],
 })
 export class AcademicTermsModule {}
