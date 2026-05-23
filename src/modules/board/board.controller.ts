@@ -21,15 +21,10 @@ export class BoardController {
   @Get()
   async getBoard(
     @CurrentUser() user: CurrentUserPayload,
-    @Query('subjectId') subjectId?: string,
   ): Promise<BoardResponseDto> {
-    const subjectIdNumber = subjectId
-      ? Number.parseInt(subjectId, 10)
-      : undefined;
     return this.boardService.getBoard(
       user.userId,
       user.termId,
-      subjectIdNumber,
     );
   }
 }
