@@ -27,7 +27,6 @@ export class BoardService {
     const assignments = await this.assignmentRepository.getAssignmentsForBoard(
       userId,
       termId,
-      subjectId,
     );
 
     const now = new Date();
@@ -55,7 +54,7 @@ export class BoardService {
     card.title = assignment.title;
     card.date = DateUtils.toLocalString(assignment.date);
     card.url = assignment.url;
-    card.isManual = assignment.canvasId < 0;
+    card.isManual = assignment.canvasId === null;
     card.types = (assignment.typeLinks ?? []).map((t) => t.defTypeId);
     card.isOverdue =
       assignment.date < now &&

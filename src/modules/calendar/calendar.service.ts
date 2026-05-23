@@ -71,7 +71,7 @@ export class CalendarService {
     entry.id = assignment.id;
     entry.title = assignment.title;
     entry.status = assignment.status;
-    entry.isManual = assignment.canvasId < 0;
+    entry.isManual = assignment.canvasId === null;
     entry.types = (assignment.typeLinks ?? []).map((t) => t.defTypeId);
     entry.isOverdue =
       assignment.date < now &&

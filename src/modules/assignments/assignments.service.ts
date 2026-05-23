@@ -95,7 +95,7 @@ export class AssignmentsService {
 
     const assignment = this.assignmentRepository.createInstance({
       htSubjectId: subject.id,
-      canvasId: -(userId * Date.now()),
+      canvasId: null,
       title: body.title,
       description: body.description ?? null,
       date: new Date(body.date),
@@ -171,12 +171,12 @@ export class AssignmentsService {
     if (!assignment) return null;
     if (assignment.subject.dtAcademicTermId !== termId) return null;
 
-    if (assignment.canvasId > 0) {
-      throw AppException.forbidden(
-        'CANVAS_ASSIGNMENT_NOT_EDITABLE',
-        'Canvas assignments cannot be edited',
-      );
-    }
+    // if (assignment.canvasId > 0) {
+    //   throw AppException.forbidden(
+    //     'CANVAS_ASSIGNMENT_NOT_EDITABLE',
+    //     'Canvas assignments cannot be edited',
+    //   );
+    // }
 
     if (body.title !== undefined) assignment.title = body.title;
     if (body.description !== undefined)
@@ -218,7 +218,7 @@ export class AssignmentsService {
     dto.url = entity.url;
     dto.status = entity.status;
     dto.types = types;
-    dto.isManual = entity.canvasId < 0;
+    dto.isManual = entity.canvasId === null;
     dto.isOverdue =
       entity.date < new Date() &&
       [AssignmentStatus.TO_DO, AssignmentStatus.IN_PROGRESS].includes(

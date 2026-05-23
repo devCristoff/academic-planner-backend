@@ -19,8 +19,8 @@ export class HtAssignment {
   @Column({ type: 'int', unsigned: true, name: 'ht_subject_id' })
   htSubjectId!: number;
 
-  @Column({ type: 'int', name: 'canvas_id' })
-  canvasId!: number;
+  @Column({ type: 'int', name: 'canvas_id', nullable: true, default: null })
+  canvasId!: number | null;
 
   @Column({ type: 'text', name: 'title' })
   title!: string;

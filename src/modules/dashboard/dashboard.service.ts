@@ -99,7 +99,7 @@ export class DashboardService {
       date: DateUtils.toLocalString(a.date),
       url: a.url,
       status: a.status,
-      isManual: a.canvasId < 0,
+      isManual: a.canvasId === null,
       types: (a.typeLinks ?? []).map((t) => t.defTypeId),
       isOverdue:
         a.date < now &&
