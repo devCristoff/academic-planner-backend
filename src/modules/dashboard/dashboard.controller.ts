@@ -13,7 +13,7 @@ import { DashboardService } from '@/src/modules/dashboard/dashboard.service';
 @ApiTags('Dashboard')
 @ApiBearerAuth('access-token')
 export class DashboardController {
-  constructor(private readonly dashboardService: DashboardService) {}
+  constructor(private readonly dashboardService: DashboardService) { }
 
   @ApiOperation({ summary: 'Get dashboard summary' })
   @HttpCode(HttpStatus.OK)
