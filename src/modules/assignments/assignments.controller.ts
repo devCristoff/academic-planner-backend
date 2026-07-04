@@ -8,9 +8,12 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Put,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   CurrentUser,
@@ -29,7 +32,7 @@ import { UpdateAssignmentStatusDto } from '@/src/modules/assignments/dto/update-
 @ApiTags('Assignments')
 @ApiBearerAuth('access-token')
 export class AssignmentsController {
-  constructor(private readonly assignmentsService: AssignmentsService) {}
+  constructor(private readonly assignmentsService: AssignmentsService) { }
 
   @ApiOperation({ summary: 'List assignments for current user/term with optional filters' })
   @HttpCode(HttpStatus.OK)
@@ -64,12 +67,17 @@ export class AssignmentsController {
   async create(
     @CurrentUser() user: CurrentUserPayload,
     @Body() body: CreateAssignmentDto,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<AssignmentResponseDto | null> {
-    return this.assignmentsService.createAssignment(
+    const assignment = await this.assignmentsService.createAssignment(
       user.userId,
       user.termId,
       body,
     );
+
+    res.setHeader('Location', `/assignments/${assignment!.id}`);
+
+    return assignment;
   }
 
   @ApiOperation({ summary: 'Update assignment status (TO_DO/IN_PROGRESS/DONE only)' })
@@ -92,7 +100,7 @@ export class AssignmentsController {
   @ApiOperation({ summary: 'Edit a manual assignment (canvas_id < 0 only)' })
   @HttpCode(HttpStatus.OK)
   @ApiResponse({ status: 200, description: 'Updated assignment', type: AssignmentResponseDto })
-  @Patch(':id')
+  @Put(':id')
   async update(
     @CurrentUser() user: CurrentUserPayload,
     @Param('id', ParseIntPipe) id: number,
