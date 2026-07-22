@@ -25,13 +25,15 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
     }),
   );
-
+  
   app.useGlobalInterceptors(
     new RequestLoggingInterceptor(),
     new DateTimeInterceptor(),
     new ResponseTransformInterceptor(),
   );
   app.useGlobalFilters(new HttpExceptionFilter());
+  
+  app.setGlobalPrefix('api');
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Academic Planner API')
@@ -48,7 +50,7 @@ async function bootstrap() {
     .build();
 
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('docs', app, swaggerDocument, {
+  SwaggerModule.setup('api/docs', app, swaggerDocument, {
     swaggerOptions: { persistAuthorization: true },
   });
 
