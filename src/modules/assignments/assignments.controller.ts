@@ -23,6 +23,7 @@ import { JwtAuthGuard } from '@/src/common/guards/jwt-auth.guard';
 import { AssignmentsService } from '@/src/modules/assignments/assignments.service';
 import { AssignmentFilterDto } from '@/src/modules/assignments/dto/assignment-filter.dto';
 import { AssignmentResponseDto } from '@/src/modules/assignments/dto/assignment-response.dto';
+import { GenerateEssayResponseDto } from '@/src/modules/assignments/dto/generate-essay-response.dto';
 import { CreateAssignmentDto } from '@/src/modules/assignments/dto/create-assignment.dto';
 import { UpdateAssignmentDto } from '@/src/modules/assignments/dto/update-assignment.dto';
 import { UpdateAssignmentStatusDto } from '@/src/modules/assignments/dto/update-assignment-status.dto';
@@ -58,6 +59,17 @@ export class AssignmentsController {
     @Param('id', ParseIntPipe) id: number,
   ): Promise<AssignmentResponseDto | null> {
     return this.assignmentsService.getAssignment(user.userId, user.termId, id);
+  }
+
+  @ApiOperation({ summary: 'Generate a technical essay for an assignment using its title as the topic' })
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: 200, description: 'Generated essay', type: GenerateEssayResponseDto })
+  @Post(':id/generate-technical-essay')
+  async generateTechnicalEssay(
+    @CurrentUser() user: CurrentUserPayload,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<GenerateEssayResponseDto> {
+    return this.assignmentsService.generateTechnicalEssay(user.userId, user.termId, id);
   }
 
   @ApiOperation({ summary: 'Create a manual assignment' })

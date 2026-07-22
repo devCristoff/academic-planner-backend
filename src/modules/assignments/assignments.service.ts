@@ -4,10 +4,12 @@ import { Repository } from 'typeorm';
 import { AppException } from '@/src/common/exceptions/app.exception';
 import { AssignmentRepository } from '@/src/common/repositories';
 import { SubjectRepository } from '@/src/common/repositories';
+import { GeminiService } from '@/src/common/services/gemini.service';
 import { AssignmentFilterDto } from '@/src/modules/assignments/dto/assignment-filter.dto';
 import {
   AssignmentResponseDto,
 } from '@/src/modules/assignments/dto/assignment-response.dto';
+import { GenerateEssayResponseDto } from '@/src/modules/assignments/dto/generate-essay-response.dto';
 import { CreateAssignmentDto } from '@/src/modules/assignments/dto/create-assignment.dto';
 import { AssignmentStatus } from '@/src/common/enums/assignment.enum';
 import { UpdateAssignmentDto } from '@/src/modules/assignments/dto/update-assignment.dto';
@@ -29,6 +31,7 @@ export class AssignmentsService {
   constructor(
     private readonly assignmentRepository: AssignmentRepository,
     private readonly subjectRepository: SubjectRepository,
+    private readonly geminiService: GeminiService,
     @InjectRepository(HtAssignmentHasDefType)
     private readonly assignmentTypeRepository: Repository<HtAssignmentHasDefType>,
   ) {}
@@ -203,6 +206,35 @@ export class AssignmentsService {
     }
 
     return this.getAssignment(userId, termId, assignment.id);
+  }
+
+  /**
+   * Generates a technical essay for an assignment using its title as the topic.
+   *
+   * @throws AppException(404, 'ASSIGNMENT_NOT_FOUND')
+   * @throws InternalServerErrorException if Gemini API call fails
+   */
+  async generateTechnicalEssay(
+    userId: number,
+    termId: number,
+    assignmentId: number,
+  ): Promise<GenerateEssayResponseDto> {
+    const assignment = await this.assignmentRepository.getAssignmentWithDetails(
+      assignmentId,
+      userId,
+    );
+
+    if (!assignment || assignment.subject.dtAcademicTermId !== termId) {
+      throw AppException.notFound('ASSIGNMENT_NOT_FOUND', 'Assignment not found');
+    }
+
+    const essay = await this.geminiService.generateTechnicalEssay(assignment.title);
+
+    const dto = new GenerateEssayResponseDto();
+    dto.assignmentId = assignment.id;
+    dto.title = assignment.title;
+    dto.essay = essay;
+    return dto;
   }
 
   private toResponseDto(entity: HtAssignment): AssignmentResponseDto {

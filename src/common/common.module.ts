@@ -7,6 +7,7 @@ import { HtSubject } from '@/src/modules/subjects/entities/ht-subject.entity';
 import { JwtAuthGuard } from '@/src/common/guards/jwt-auth.guard';
 import { TermContextService } from '@/src/common/services/term-context.service';
 import { MailService } from '@/src/common/services/mail.service';
+import { GeminiService } from '@/src/common/services/gemini.service';
 import {
   AssignmentRepository,
   SubjectRepository,
@@ -31,6 +32,7 @@ import {
       scope: Scope.REQUEST,
     },
     MailService,
+    GeminiService,
     AssignmentRepository,
     SubjectRepository,
     AcademicTermRepository,
@@ -39,6 +41,7 @@ import {
   exports: [
     JwtAuthGuard,
     MailService,
+    GeminiService,
     TermContextService,
     TypeOrmModule,
     AssignmentRepository,
