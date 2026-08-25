@@ -8,6 +8,7 @@ import { JwtAuthGuard } from '@/src/common/guards/jwt-auth.guard';
 import { TermContextService } from '@/src/common/services/term-context.service';
 import { MailService } from '@/src/common/services/mail.service';
 import { GeminiService } from '@/src/common/services/gemini.service';
+import { TemplateService } from '@/src/common/services/template.service';
 import {
   AssignmentRepository,
   SubjectRepository,
@@ -33,6 +34,7 @@ import {
     },
     MailService,
     GeminiService,
+    TemplateService,
     AssignmentRepository,
     SubjectRepository,
     AcademicTermRepository,
@@ -42,6 +44,7 @@ import {
     JwtAuthGuard,
     MailService,
     GeminiService,
+    TemplateService,
     TermContextService,
     TypeOrmModule,
     AssignmentRepository,

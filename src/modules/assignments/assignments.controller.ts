@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -13,6 +14,8 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Response } from 'express';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
@@ -21,19 +24,26 @@ import {
 } from '@/src/common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@/src/common/guards/jwt-auth.guard';
 import { AssignmentsService } from '@/src/modules/assignments/assignments.service';
+import { TemplateService } from '@/src/common/services/template.service';
 import { AssignmentFilterDto } from '@/src/modules/assignments/dto/assignment-filter.dto';
 import { AssignmentResponseDto } from '@/src/modules/assignments/dto/assignment-response.dto';
 import { GenerateEssayResponseDto } from '@/src/modules/assignments/dto/generate-essay-response.dto';
 import { CreateAssignmentDto } from '@/src/modules/assignments/dto/create-assignment.dto';
 import { UpdateAssignmentDto } from '@/src/modules/assignments/dto/update-assignment.dto';
 import { UpdateAssignmentStatusDto } from '@/src/modules/assignments/dto/update-assignment-status.dto';
+import { DtUser } from '@/src/modules/auth/entities/dt-user.entity';
 
 @Controller('assignments')
 @UseGuards(JwtAuthGuard)
 @ApiTags('Assignments')
 @ApiBearerAuth('access-token')
 export class AssignmentsController {
-  constructor(private readonly assignmentsService: AssignmentsService) { }
+  constructor(
+    private readonly assignmentsService: AssignmentsService,
+    private readonly templateService: TemplateService,
+    @InjectRepository(DtUser)
+    private readonly userRepository: Repository<DtUser>,
+  ) { }
 
   @ApiOperation({ summary: 'List assignments for current user/term with optional filters' })
   @HttpCode(HttpStatus.OK)
@@ -48,6 +58,31 @@ export class AssignmentsController {
       user.termId,
       query,
     );
+  }
+
+  @ApiOperation({ summary: 'Get presentation template with assignment title and due date' })
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: 200, description: 'Rendered presentation template', type: String })
+  @Get(':id/presentation-template')
+  async getPresentationTemplate(
+    @CurrentUser() user: CurrentUserPayload,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<string> {
+    const userEntity = await this.userRepository.findOneBy({ id: user.userId });
+
+    if (!userEntity) {
+      throw new NotFoundException('User not found');
+    }
+
+    const assignment = await this.assignmentsService.getAssignment(user.userId, user.termId, id);
+
+    if (!assignment) {
+      throw new NotFoundException('Assignment not found');
+    }
+
+    const dueDate = new Date(assignment.date);
+
+    return this.templateService.renderPresentationTemplate(userEntity, assignment.title, dueDate);
   }
 
   @ApiOperation({ summary: 'Get assignment detail' })

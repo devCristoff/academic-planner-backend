@@ -10,6 +10,10 @@ export class DtUser {
   canvasId!: number;
 
   @Index({ unique: true })
+  @Column({ type: 'nvarchar', length: 100, name: 'tuition_id' })
+  tuitionId!: string;
+
+  @Index({ unique: true })
   @Column({ type: 'varchar', length: 100, name: 'email' })
   email!: string;
 
