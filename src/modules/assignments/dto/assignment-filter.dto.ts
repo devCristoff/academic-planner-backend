@@ -1,8 +1,9 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsDateString, IsEnum, IsInt, IsOptional, Min } from 'class-validator';
 import { AssignmentStatus, AssignmentType } from '@/src/common/enums/assignment.enum';
+import { PaginationQueryDto } from '@/src/common/dto/pagination-query.dto';
 
-export class AssignmentFilterDto {
+export class AssignmentFilterDto extends PaginationQueryDto {
   @ApiPropertyOptional({
     description: 'Filter by subject identifier',
     example: 42,

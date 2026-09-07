@@ -9,6 +9,7 @@ import { AssignmentFilterDto } from '@/src/modules/assignments/dto/assignment-fi
 import {
   AssignmentResponseDto,
 } from '@/src/modules/assignments/dto/assignment-response.dto';
+import { PaginatedResult } from '@/src/common/dto/paginated-result.interface';
 import { GenerateEssayResponseDto } from '@/src/modules/assignments/dto/generate-essay-response.dto';
 import { CreateAssignmentDto } from '@/src/modules/assignments/dto/create-assignment.dto';
 import { AssignmentStatus } from '@/src/common/enums/assignment.enum';
@@ -37,19 +38,31 @@ export class AssignmentsService {
   ) {}
 
   /**
-   * Lists assignments for a user and term applying optional filters.
+   * Lists assignments for a user and term applying optional filters, paginated.
    */
   async listAssignments(
     userId: number,
     termId: number,
     filter: AssignmentFilterDto,
-  ): Promise<AssignmentResponseDto[]> {
-    const assignments = await this.assignmentRepository.getAssignmentsWithFilters(
+  ): Promise<PaginatedResult<AssignmentResponseDto>> {
+    const page = filter.page ?? 1;
+    const limit = filter.limit ?? 20;
+
+    const { items, total } = await this.assignmentRepository.getAssignmentsWithFilters(
       userId,
       termId,
       filter,
+      page,
+      limit,
     );
-    return assignments.map((a) => this.toResponseDto(a));
+
+    return {
+      data: items.map((a) => this.toResponseDto(a)),
+      total,
+      page,
+      limit,
+      totalPages: total === 0 ? 0 : Math.ceil(total / limit),
+    };
   }
 
   /**

@@ -27,6 +27,8 @@ import { AssignmentsService } from '@/src/modules/assignments/assignments.servic
 import { TemplateService } from '@/src/common/services/template.service';
 import { AssignmentFilterDto } from '@/src/modules/assignments/dto/assignment-filter.dto';
 import { AssignmentResponseDto } from '@/src/modules/assignments/dto/assignment-response.dto';
+import { PaginatedAssignmentResponseDto } from '@/src/modules/assignments/dto/paginated-assignment-response.dto';
+import { PaginatedResult } from '@/src/common/dto/paginated-result.interface';
 import { GenerateEssayResponseDto } from '@/src/modules/assignments/dto/generate-essay-response.dto';
 import { CreateAssignmentDto } from '@/src/modules/assignments/dto/create-assignment.dto';
 import { UpdateAssignmentDto } from '@/src/modules/assignments/dto/update-assignment.dto';
@@ -45,14 +47,14 @@ export class AssignmentsController {
     private readonly userRepository: Repository<DtUser>,
   ) { }
 
-  @ApiOperation({ summary: 'List assignments for current user/term with optional filters' })
+  @ApiOperation({ summary: 'List assignments for current user/term with optional filters, paginated' })
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ status: 200, description: 'Assignments list', type: AssignmentResponseDto, isArray: true })
+  @ApiResponse({ status: 200, description: 'Paginated assignments list', type: PaginatedAssignmentResponseDto })
   @Get()
   async list(
     @CurrentUser() user: CurrentUserPayload,
     @Query() query: AssignmentFilterDto,
-  ): Promise<AssignmentResponseDto[]> {
+  ): Promise<PaginatedResult<AssignmentResponseDto>> {
     return this.assignmentsService.listAssignments(
       user.userId,
       user.termId,

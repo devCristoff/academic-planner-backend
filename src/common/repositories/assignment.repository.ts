@@ -9,7 +9,7 @@ import { AssignmentStatus } from '@/src/common/enums/assignment.enum';
  * Repository for Assignment entity
  * Provides optimized query methods for common assignment operations
  * @apiexample
- * const assignments = await assignmentRepository.getAssignmentsWithFilters(userId, termId, filter);
+ * const { items, total } = await assignmentRepository.getAssignmentsWithFilters(userId, termId, filter, page, limit);
  */
 @Injectable()
 export class AssignmentRepository extends BaseRepository<HtAssignment> {
@@ -22,41 +22,75 @@ export class AssignmentRepository extends BaseRepository<HtAssignment> {
   }
 
   /**
-   * Get assignments with filters applied
-   * Used by assignments service, datatable, calendar, board services
+   * Get a page of assignments with filters applied
+   * Used by assignments service
    * @param userId User ID
    * @param termId Academic term ID
    * @param filter Optional filter criteria (subjectId, status, type, from, to)
-   * @returns Filtered assignments with relations
+   * @param page Page number (1-based)
+   * @param limit Items per page
+   * @returns Page of filtered assignments with relations, and the total matching count
    */
   async getAssignmentsWithFilters(
     userId: number,
     termId: number,
     filter: AssignmentFilterDto,
-  ): Promise<HtAssignment[]> {
-    const qb = this.repository.createQueryBuilder('a')
-      .innerJoinAndSelect('a.subject', 's')
-      .leftJoinAndSelect('a.typeLinks', 'atl')
+    page: number,
+    limit: number,
+  ): Promise<{ items: HtAssignment[]; total: number }> {
+    const baseQb = this.repository.createQueryBuilder('a')
+      .innerJoin('a.subject', 's')
+      .leftJoin('a.typeLinks', 'atl')
       .where('s.dtUserId = :userId', { userId })
       .andWhere('s.dtAcademicTermId = :termId', { termId });
 
     if (filter.subjectId !== undefined) {
-      qb.andWhere('s.id = :subjectId', { subjectId: filter.subjectId });
+      baseQb.andWhere('s.id = :subjectId', { subjectId: filter.subjectId });
     }
     if (filter.status !== undefined) {
-      qb.andWhere('a.status = :status', { status: filter.status });
+      baseQb.andWhere('a.status = :status', { status: filter.status });
     }
     if (filter.type !== undefined) {
-      qb.andWhere('atl.defTypeId = :type', { type: filter.type });
+      baseQb.andWhere('atl.defTypeId = :type', { type: filter.type });
     }
     if (filter.from !== undefined) {
-      qb.andWhere('a.date >= :from', { from: new Date(filter.from) });
+      baseQb.andWhere('a.date >= :from', { from: new Date(filter.from) });
     }
     if (filter.to !== undefined) {
-      qb.andWhere('a.date <= :to', { to: new Date(filter.to) });
+      baseQb.andWhere('a.date <= :to', { to: new Date(filter.to) });
     }
 
-    return qb.orderBy('a.date', 'ASC').getMany();
+    // `atl` is a to-many join, so counting/paginating on `baseQb` directly would be
+    // thrown off by row fanout. Count and page distinct assignment ids first, then
+    // fetch full entities (with relations) for just that page of ids.
+    const totalRow = await baseQb.clone()
+      .select('COUNT(DISTINCT a.id)', 'count')
+      .getRawOne<{ count: string }>();
+    const total = Number(totalRow?.count ?? 0);
+
+    const idRows = await baseQb.clone()
+      .select('a.id', 'id')
+      .groupBy('a.id')
+      .orderBy('a.date', 'ASC')
+      .addOrderBy('a.id', 'ASC')
+      .limit(limit)
+      .offset((page - 1) * limit)
+      .getRawMany<{ id: number }>();
+
+    const ids = idRows.map((r) => r.id);
+    if (ids.length === 0) {
+      return { items: [], total };
+    }
+
+    const items = await this.repository.createQueryBuilder('a')
+      .innerJoinAndSelect('a.subject', 's')
+      .leftJoinAndSelect('a.typeLinks', 'atl')
+      .where('a.id IN (:...ids)', { ids })
+      .orderBy('a.date', 'ASC')
+      .addOrderBy('a.id', 'ASC')
+      .getMany();
+
+    return { items, total };
   }
 
   /**
@@ -172,70 +206,6 @@ export class AssignmentRepository extends BaseRepository<HtAssignment> {
       .where('s.dtUserId = :userId', { userId })
       .andWhere('s.dtAcademicTermId = :termId', { termId })
       .getMany();
-  }
-
-  /**
-   * Get paginated assignments with filters and search
-   * Used by datatable service
-   * @param userId User ID
-   * @param termId Academic term ID
-   * @param filter Filters (subjectId, status, type)
-   * @param search Optional search string for title
-   * @param page Page number (1-based)
-   * @param limit Items per page
-   * @param sortBy Column to sort by (date, title, status)
-   * @param order Sort direction (asc, desc)
-   * @returns Paginated assignments with total count
-   */
-  async getAssignmentsPaginated(
-    userId: number,
-    termId: number,
-    filter: AssignmentFilterDto,
-    search: string | undefined,
-    page: number,
-    limit: number,
-    sortBy: string,
-    order: string,
-  ): Promise<{ items: HtAssignment[]; total: number }> {
-    const skip = (page - 1) * limit;
-
-    const qb = this.repository.createQueryBuilder('a')
-      .innerJoinAndSelect('a.subject', 's')
-      .leftJoinAndSelect('a.typeLinks', 'atl')
-      .where('s.dtUserId = :userId', { userId })
-      .andWhere('s.dtAcademicTermId = :termId', { termId });
-
-    if (filter.subjectId !== undefined) {
-      qb.andWhere('s.id = :subjectId', { subjectId: filter.subjectId });
-    }
-    if (filter.status !== undefined) {
-      qb.andWhere('a.status = :status', { status: filter.status });
-    }
-    if (filter.type !== undefined) {
-      qb.andWhere('atl.defTypeId = :type', { type: filter.type });
-    }
-    if (search) {
-      qb.andWhere('a.title LIKE :search', { search: `%${search}%` });
-    }
-
-    const total = await qb.clone().select('a.id').distinct(true).getCount();
-
-    // Map sortBy column safely
-    const sortColumns: Record<string, 'a.date' | 'a.title' | 'a.status'> = {
-      date: 'a.date',
-      title: 'a.title',
-      status: 'a.status',
-    };
-    const orderByColumn = sortColumns[sortBy] ?? 'a.date';
-    const direction = order.toLowerCase() === 'desc' ? 'DESC' : 'ASC';
-
-    const items = await qb
-      .orderBy(orderByColumn, direction)
-      .skip(skip)
-      .take(limit)
-      .getMany();
-
-    return { items, total };
   }
 
   /**
