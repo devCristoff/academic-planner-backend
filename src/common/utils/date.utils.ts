@@ -6,7 +6,7 @@ const HTTP_DATE_FORMAT = 'ddd, DD MMM YYYY HH:mm:ss z';
 
 export class DateUtils {
   static getTimezone(): string {
-    return process.env.APP_TIMEZONE ?? process.env.TZ ?? DEFAULT_TIMEZONE;
+    return DEFAULT_TIMEZONE;
   }
 
   static getFormat(): string {
