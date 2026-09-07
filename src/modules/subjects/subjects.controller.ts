@@ -7,6 +7,7 @@ import {
   Param,
   ParseIntPipe,
   Patch,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -16,8 +17,11 @@ import {
 } from '@/src/common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@/src/common/guards/jwt-auth.guard';
 import { SubjectResponseDto } from '@/src/modules/subjects/dto/subject-response.dto';
+import { SubjectFilterDto } from '@/src/modules/subjects/dto/subject-filter.dto';
+import { PaginatedSubjectResponseDto } from '@/src/modules/subjects/dto/paginated-subject-response.dto';
 import { UpdateSubjectDto } from '@/src/modules/subjects/dto/update-subject.dto';
 import { SubjectsService } from '@/src/modules/subjects/subjects.service';
+import { PaginatedResult } from '@/src/common/dto/paginated-result.interface';
 
 @Controller('subjects')
 @UseGuards(JwtAuthGuard)
@@ -26,14 +30,15 @@ import { SubjectsService } from '@/src/modules/subjects/subjects.service';
 export class SubjectsController {
   constructor(private readonly subjectsService: SubjectsService) {}
 
-  @ApiOperation({ summary: 'List subjects for current user/term with assignment counts' })
+  @ApiOperation({ summary: 'List subjects for current user/term with assignment counts, paginated' })
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ status: 200, description: 'Subjects list', type: SubjectResponseDto, isArray: true })
+  @ApiResponse({ status: 200, description: 'Paginated subjects list', type: PaginatedSubjectResponseDto })
   @Get()
   async list(
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<SubjectResponseDto[]> {
-    return this.subjectsService.listSubjects(user.userId, user.termId);
+    @Query() query: SubjectFilterDto,
+  ): Promise<PaginatedResult<SubjectResponseDto>> {
+    return this.subjectsService.listSubjects(user.userId, user.termId, query);
   }
 
   @ApiOperation({ summary: 'Get a single subject with counts and recent assignments' })
