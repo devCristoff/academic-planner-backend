@@ -8,6 +8,7 @@ import { MailService } from '@/src/common/services/mail.service';
 import { AcademicTermsService } from '@/src/modules/academic-terms/academic-terms.service';
 import { RequestOtpDto } from '@/src/modules/auth/dto/request-otp.dto';
 import { VerifyOtpDto } from '@/src/modules/auth/dto/verify-otp.dto';
+import { AuthUserDto } from '@/src/modules/auth/dto/auth-response.dto';
 import { DtUser } from '@/src/modules/auth/entities/dt-user.entity';
 import { DtUserOtp } from '@/src/modules/auth/entities/dt-user-otp.entity';
 import { DtUserHasDefRole } from '@/src/modules/auth/entities/dt-user-has-def-role.entity';
@@ -108,5 +109,20 @@ export class AuthService {
     });
 
     return { accessToken };
+  }
+
+  /**
+   * Returns profile information for the currently authenticated user.
+   *
+   * @throws AppException(404, 'USER_NOT_FOUND') if the user no longer exists
+   */
+  async getMe(userId: number): Promise<AuthUserDto> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+
+    if (!user) {
+      throw AppException.notFound('USER_NOT_FOUND', 'User not found');
+    }
+
+    return AuthUserDto.fromEntity(user);
   }
 }

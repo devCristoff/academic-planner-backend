@@ -35,6 +35,19 @@ export class AuthUserDto {
     nullable: true,
   })
   avatarUrl!: string | null;
+
+  /**
+   * Factory method to create AuthUserDto from a DtUser entity
+   */
+  static fromEntity(user: DtUser): AuthUserDto {
+    const dto = new AuthUserDto();
+    dto.id = user.id;
+    dto.name = user.name;
+    dto.lastName = user.lastName;
+    dto.email = user.email;
+    dto.avatarUrl = user.avatarUrl;
+    return dto;
+  }
 }
 
 /**
@@ -60,13 +73,7 @@ export class AuthResponseDto {
   static from(user: DtUser, accessToken: string): AuthResponseDto {
     const dto = new AuthResponseDto();
     dto.accessToken = accessToken;
-    dto.user = {
-      id: user.id,
-      name: user.name,
-      lastName: user.lastName,
-      email: user.email,
-      avatarUrl: user.avatarUrl,
-    };
+    dto.user = AuthUserDto.fromEntity(user);
     return dto;
   }
 }
