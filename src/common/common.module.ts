@@ -5,6 +5,7 @@ import { HtAssignment } from '@/src/modules/assignments/entities/ht-assignment.e
 import { HtAssignmentHasDefType } from '@/src/modules/assignments/entities/ht-assignment-has-def-type.entity';
 import { HtSubject } from '@/src/modules/subjects/entities/ht-subject.entity';
 import { JwtAuthGuard } from '@/src/common/guards/jwt-auth.guard';
+import { RolesGuard } from '@/src/common/guards/roles.guard';
 import { TermContextService } from '@/src/common/services/term-context.service';
 import { MailService } from '@/src/common/services/mail.service';
 import { GeminiService } from '@/src/common/services/gemini.service';
@@ -27,6 +28,7 @@ import {
   ],
   providers: [
     JwtAuthGuard,
+    RolesGuard,
     {
       provide: TermContextService,
       useClass: TermContextService,
@@ -42,6 +44,7 @@ import {
   ],
   exports: [
     JwtAuthGuard,
+    RolesGuard,
     MailService,
     GeminiService,
     TemplateService,

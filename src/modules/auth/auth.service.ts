@@ -10,6 +10,8 @@ import { RequestOtpDto } from '@/src/modules/auth/dto/request-otp.dto';
 import { VerifyOtpDto } from '@/src/modules/auth/dto/verify-otp.dto';
 import { DtUser } from '@/src/modules/auth/entities/dt-user.entity';
 import { DtUserOtp } from '@/src/modules/auth/entities/dt-user-otp.entity';
+import { DtUserHasDefRole } from '@/src/modules/auth/entities/dt-user-has-def-role.entity';
+import { Role } from '@/src/common/enums/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +20,8 @@ export class AuthService {
     private readonly userRepository: Repository<DtUser>,
     @InjectRepository(DtUserOtp)
     private readonly otpRepository: Repository<DtUserOtp>,
+    @InjectRepository(DtUserHasDefRole)
+    private readonly userRoleRepository: Repository<DtUserHasDefRole>,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
     private readonly academicTermsService: AcademicTermsService,
@@ -92,9 +96,15 @@ export class AuthService {
 
     const currentTerm = await this.academicTermsService.getCurrent();
 
+    const roleLinks = await this.userRoleRepository.find({
+      where: { dtUserId: user.id },
+    });
+    const roles = roleLinks.map((link) => link.defRoleId as Role);
+
     const accessToken = await this.jwtService.signAsync({
       sub: user.id,
       termId: currentTerm.id,
+      roles,
     });
 
     return { accessToken };

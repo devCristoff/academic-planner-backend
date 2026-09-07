@@ -1,6 +1,7 @@
 import { createParamDecorator, type ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { Role } from '@/src/common/enums/role.enum';
 
-export type CurrentUserPayload = { userId: number; termId: number };
+export type CurrentUserPayload = { userId: number; termId: number; roles: Role[] };
 
 /**
  * Decorator to extract current user from JWT payload
