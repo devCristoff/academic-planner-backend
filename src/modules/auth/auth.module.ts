@@ -10,6 +10,8 @@ import { AuthController } from '@/src/modules/auth/auth.controller';
 import { AuthService } from '@/src/modules/auth/auth.service';
 import { DtUser } from '@/src/modules/auth/entities/dt-user.entity';
 import { DtUserOtp } from '@/src/modules/auth/entities/dt-user-otp.entity';
+import { DefRole } from '@/src/modules/auth/entities/def-role.entity';
+import { DtUserHasDefRole } from '@/src/modules/auth/entities/dt-user-has-def-role.entity';
 import { JwtStrategy } from '@/src/modules/auth/strategies/jwt.strategy';
 
 /**
@@ -23,7 +25,7 @@ import { JwtStrategy } from '@/src/modules/auth/strategies/jwt.strategy';
   imports: [
     CommonModule,
     AcademicTermsModule,
-    TypeOrmModule.forFeature([DtUser, DtUserOtp]),
+    TypeOrmModule.forFeature([DtUser, DtUserOtp, DefRole, DtUserHasDefRole]),
     PassportModule,
     JwtModule.registerAsync({
       inject: [ConfigService],

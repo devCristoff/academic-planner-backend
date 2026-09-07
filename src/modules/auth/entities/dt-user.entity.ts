@@ -1,4 +1,12 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  type Relation,
+} from 'typeorm';
+import { DtUserHasDefRole } from '@/src/modules/auth/entities/dt-user-has-def-role.entity';
 
 @Entity({ name: 'dt_user' })
 export class DtUser {
@@ -25,4 +33,7 @@ export class DtUser {
 
   @Column({ type: 'text', nullable: true, name: 'avatar_url' })
   avatarUrl!: string | null;
+
+  @OneToMany(() => DtUserHasDefRole, (r) => r.user)
+  roleLinks!: Relation<DtUserHasDefRole[]>;
 }
