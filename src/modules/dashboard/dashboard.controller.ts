@@ -5,11 +5,15 @@ import {
   type CurrentUserPayload,
 } from '@/src/common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@/src/common/guards/jwt-auth.guard';
+import { RolesGuard } from '@/src/common/guards/roles.guard';
+import { Roles } from '@/src/common/decorators/roles.decorator';
+import { Role } from '@/src/common/enums/role.enum';
 import { DashboardResponseDto } from '@/src/modules/dashboard/dto/dashboard-response.dto';
 import { DashboardService } from '@/src/modules/dashboard/dashboard.service';
 
 @Controller('dashboard')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.STUDENT)
 @ApiTags('Dashboard')
 @ApiBearerAuth('access-token')
 export class DashboardController {

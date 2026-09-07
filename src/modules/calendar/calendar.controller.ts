@@ -5,13 +5,17 @@ import {
   type CurrentUserPayload,
 } from '@/src/common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@/src/common/guards/jwt-auth.guard';
+import { RolesGuard } from '@/src/common/guards/roles.guard';
+import { Roles } from '@/src/common/decorators/roles.decorator';
+import { Role } from '@/src/common/enums/role.enum';
 import { CalendarQueryDto } from '@/src/modules/calendar/dto/calendar-query.dto';
 import { CalendarEntryDto, CalendarResponseDto } from '@/src/modules/calendar/dto/calendar-response.dto';
 import { CalendarService } from '@/src/modules/calendar/calendar.service';
 
 @ApiExtraModels(CalendarEntryDto)
 @Controller('calendar')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.STUDENT)
 @ApiTags('Calendar')
 @ApiBearerAuth('access-token')
 export class CalendarController {

@@ -16,6 +16,9 @@ import {
   type CurrentUserPayload,
 } from '@/src/common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@/src/common/guards/jwt-auth.guard';
+import { RolesGuard } from '@/src/common/guards/roles.guard';
+import { Roles } from '@/src/common/decorators/roles.decorator';
+import { Role } from '@/src/common/enums/role.enum';
 import { SubjectResponseDto } from '@/src/modules/subjects/dto/subject-response.dto';
 import { SubjectFilterDto } from '@/src/modules/subjects/dto/subject-filter.dto';
 import { PaginatedSubjectResponseDto } from '@/src/modules/subjects/dto/paginated-subject-response.dto';
@@ -24,7 +27,8 @@ import { SubjectsService } from '@/src/modules/subjects/subjects.service';
 import { PaginatedResult } from '@/src/common/dto/paginated-result.interface';
 
 @Controller('subjects')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.STUDENT)
 @ApiTags('Subjects')
 @ApiBearerAuth('access-token')
 export class SubjectsController {

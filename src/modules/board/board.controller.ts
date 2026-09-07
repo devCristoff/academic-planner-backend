@@ -5,11 +5,15 @@ import {
   type CurrentUserPayload,
 } from '@/src/common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@/src/common/guards/jwt-auth.guard';
+import { RolesGuard } from '@/src/common/guards/roles.guard';
+import { Roles } from '@/src/common/decorators/roles.decorator';
+import { Role } from '@/src/common/enums/role.enum';
 import { BoardResponseDto } from '@/src/modules/board/dto/board-response.dto';
 import { BoardService } from '@/src/modules/board/board.service';
 
 @Controller('board')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.STUDENT)
 @ApiTags('Board')
 @ApiBearerAuth('access-token')
 export class BoardController {
