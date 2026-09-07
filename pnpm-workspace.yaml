@@ -1,4 +1,6 @@
 allowBuilds:
+  '@google/genai': false
   '@nestjs/core': true
   '@scarf/scarf': true
   '@swc/core': true
+  protobufjs: false
