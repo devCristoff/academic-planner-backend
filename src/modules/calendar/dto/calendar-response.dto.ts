@@ -55,6 +55,12 @@ export class CalendarEntryDto {
   status!: string;
 
   @ApiProperty({
+    description: 'Due time in HH:mm format',
+    example: '23:59',
+  })
+  dueTime!: string;
+
+  @ApiProperty({
     description: 'Whether assignment is overdue',
     example: false,
   })

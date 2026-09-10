@@ -61,6 +61,12 @@ export class AssignmentResponseDto {
   date!: string;
 
   @ApiProperty({
+    description: 'Due time in HH:mm format',
+    example: '23:59',
+  })
+  dueTime!: string;
+
+  @ApiProperty({
     description: 'External URL (LMS link, GitHub, etc.)',
     example: 'https://canvas.university.edu/assignments/156',
     nullable: true,

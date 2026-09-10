@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AppException } from '@/src/common/exceptions/app.exception';
 import { AssignmentRepository } from '@/src/common/repositories';
 import { AssignmentStatus } from '@/src/common/enums/assignment.enum';
+import { DateUtils } from '@/src/common/utils/date.utils';
 import { HtAssignment } from '@/src/modules/assignments/entities/ht-assignment.entity';
 import { CalendarQueryDto } from '@/src/modules/calendar/dto/calendar-query.dto';
 import {
@@ -71,6 +72,7 @@ export class CalendarService {
     entry.id = assignment.id;
     entry.title = assignment.title;
     entry.status = assignment.status;
+    entry.dueTime = DateUtils.toLocalString(assignment.date).split(' ')[1];
     entry.isManual = assignment.canvasId === null;
     entry.types = (assignment.typeLinks ?? []).map((t) => t.defTypeId);
     entry.isOverdue =

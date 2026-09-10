@@ -260,6 +260,7 @@ export class AssignmentsService {
     dto.title = entity.title;
     dto.description = entity.description;
     dto.date = DateUtils.toLocalString(entity.date);
+    dto.dueTime = DateUtils.toLocalString(entity.date).split(' ')[1];
     dto.url = entity.url;
     dto.status = entity.status;
     dto.types = types;
