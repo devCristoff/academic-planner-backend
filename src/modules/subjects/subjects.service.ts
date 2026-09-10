@@ -33,6 +33,7 @@ export class SubjectsService {
       .createQueryBuilder('s')
       .leftJoin('s.assignments', 'a')
       .where('s.dtUserId = :userId', { userId })
+      .andWhere('s.status = :status', { status: 'ACTIVE' })
       .andWhere('s.dtAcademicTermId = :termId', { termId });
 
     // getCount() on a grouped query builder is unreliable in TypeORM, so total is
