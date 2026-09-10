@@ -22,11 +22,12 @@ export class BoardService {
   async getBoard(
     userId: number,
     termId: number,
-    subjectId?: number,
+    subjectIds?: number[],
   ): Promise<BoardResponseDto> {
     const assignments = await this.assignmentRepository.getAssignmentsForBoard(
       userId,
       termId,
+      subjectIds,
     );
 
     const now = new Date();

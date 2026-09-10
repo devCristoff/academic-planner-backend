@@ -239,12 +239,13 @@ export class AssignmentRepository extends BaseRepository<HtAssignment> {
    * Used by board service
    * @param userId User ID
    * @param termId Academic term ID
-   * @param subjectId Optional subject filter
+   * @param subjectIds Optional subject filter (multi-select)
    * @returns All assignments with status = TO_DO, IN_PROGRESS, or DONE
    */
   async getAssignmentsForBoard(
     userId: number,
     termId: number,
+    subjectIds?: number[],
   ): Promise<HtAssignment[]> {
     const qb = this.repository.createQueryBuilder('a')
       .innerJoinAndSelect('a.subject', 's')
@@ -254,6 +255,10 @@ export class AssignmentRepository extends BaseRepository<HtAssignment> {
       .andWhere('a.status IN (:...statuses)', {
         statuses: [AssignmentStatus.TO_DO, AssignmentStatus.IN_PROGRESS, AssignmentStatus.DONE],
       });
+
+    if (subjectIds && subjectIds.length > 0) {
+      qb.andWhere('s.id IN (:...subjectIds)', { subjectIds });
+    }
 
     return qb.orderBy('a.date', 'ASC').getMany();
   }

@@ -9,6 +9,7 @@ import { RolesGuard } from '@/src/common/guards/roles.guard';
 import { Roles } from '@/src/common/decorators/roles.decorator';
 import { Role } from '@/src/common/enums/role.enum';
 import { BoardResponseDto } from '@/src/modules/board/dto/board-response.dto';
+import { BoardQueryDto } from '@/src/modules/board/dto/board-query.dto';
 import { BoardService } from '@/src/modules/board/board.service';
 
 @Controller('board')
@@ -19,16 +20,18 @@ import { BoardService } from '@/src/modules/board/board.service';
 export class BoardController {
   constructor(private readonly boardService: BoardService) {}
 
-  @ApiOperation({ summary: 'Get Kanban board columns (todo/inProgress/done)' })
+  @ApiOperation({ summary: 'Get Kanban board columns (todo/inProgress/done), optionally filtered by subjects' })
   @HttpCode(HttpStatus.OK)
   @ApiResponse({ status: 200, description: 'Board payload', type: BoardResponseDto })
   @Get()
   async getBoard(
     @CurrentUser() user: CurrentUserPayload,
+    @Query() query: BoardQueryDto,
   ): Promise<BoardResponseDto> {
     return this.boardService.getBoard(
       user.userId,
       user.termId,
+      query.subjectIds,
     );
   }
 }
