@@ -80,7 +80,7 @@ export class SubjectsService {
   }
 
   /**
-   * Returns a single subject with counts and recent assignments.
+   * Returns a single subject with counts.
    *
    * @throws AppException(404, 'SUBJECT_NOT_FOUND')
    */
@@ -122,17 +122,7 @@ export class SubjectsService {
       return null;
     }
 
-    const recentAssignments = await this.assignmentRepository
-      .createQueryBuilder('a')
-      .innerJoin('a.subject', 's')
-      .where('s.id = :subjectId', { subjectId })
-      .andWhere('s.dtUserId = :userId', { userId })
-      .andWhere('s.dtAcademicTermId = :termId', { termId })
-      .orderBy('a.date', 'DESC')
-      .take(5)
-      .getMany();
-
-    return SubjectResponseDto.fromRaw(row, recentAssignments);
+    return SubjectResponseDto.fromRaw(row);
   }
 
   /**

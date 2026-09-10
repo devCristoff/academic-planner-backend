@@ -33,36 +33,6 @@ export class SubjectCountsDto {
 }
 
 /**
- * Recent assignment in subject details
- */
-export class RecentAssignmentDto {
-  @ApiProperty({
-    description: 'Assignment unique identifier',
-    example: 156,
-  })
-  id!: number;
-
-  @ApiProperty({
-    description: 'Assignment title',
-    example: 'Implement QuickSort Algorithm',
-  })
-  title!: string;
-
-  @ApiProperty({
-    description: 'Due date in ISO format',
-    example: '2024-10-15T23:59:59.000Z',
-  })
-  date!: string;
-
-  @ApiProperty({
-    description: 'Assignment status',
-    enum: Object.values(AssignmentStatus),
-    example: 'DONE',
-  })
-  status!: string;
-}
-
-/**
  * Subject details response
  */
 export class SubjectResponseDto {
@@ -98,15 +68,6 @@ export class SubjectResponseDto {
   })
   counts!: SubjectCountsDto;
 
-  @ApiProperty({
-    description: 'Recent assignments for this subject (optional)',
-    type: [RecentAssignmentDto],
-    isArray: true,
-    required: false,
-    example: [{ id: 156, title: 'Implement QuickSort Algorithm', date: '2024-10-15 23:59:59', status: 'DONE' }],
-  })
-  recentAssignments?: RecentAssignmentDto[];
-
   /**
    * Factory method to create SubjectResponseDto from raw query result
    */
@@ -121,7 +82,6 @@ export class SubjectResponseDto {
       done: string;
       total: string;
     },
-    recentAssignments?: HtAssignment[],
   ): SubjectResponseDto {
     const dto = new SubjectResponseDto();
     dto.id = Number(raw.id);
@@ -134,14 +94,7 @@ export class SubjectResponseDto {
       done: Number(raw.done ?? 0),
       total: Number(raw.total ?? 0),
     };
-    if (recentAssignments) {
-      dto.recentAssignments = recentAssignments.map((a) => ({
-        id: a.id,
-        title: a.title,
-        date: DateUtils.toLocalString(a.date),
-        status: a.status,
-      }));
-    }
+
     return dto;
   }
 }

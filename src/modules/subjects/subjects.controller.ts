@@ -45,7 +45,7 @@ export class SubjectsController {
     return this.subjectsService.listSubjects(user.userId, user.termId, query);
   }
 
-  @ApiOperation({ summary: 'Get a single subject with counts and recent assignments' })
+  @ApiOperation({ summary: 'Get a single subject with counts' })
   @HttpCode(HttpStatus.OK)
   @ApiResponse({ status: 200, description: 'Subject detail', type: SubjectResponseDto })
   @Get(':id')
