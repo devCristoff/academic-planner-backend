@@ -26,7 +26,7 @@ export class AssignmentRepository extends BaseRepository<HtAssignment> {
    * Used by assignments service
    * @param userId User ID
    * @param termId Academic term ID
-   * @param filter Optional filter criteria (subjectId, status, type, from, to)
+   * @param filter Optional filter criteria (subjectIds, statuses, type, from, to)
    * @param page Page number (1-based)
    * @param limit Items per page
    * @returns Page of filtered assignments with relations, and the total matching count
@@ -44,11 +44,11 @@ export class AssignmentRepository extends BaseRepository<HtAssignment> {
       .where('s.dtUserId = :userId', { userId })
       .andWhere('s.dtAcademicTermId = :termId', { termId });
 
-    if (filter.subjectId !== undefined) {
-      baseQb.andWhere('s.id = :subjectId', { subjectId: filter.subjectId });
+    if (filter.subjectIds && filter.subjectIds.length > 0) {
+      baseQb.andWhere('s.id IN (:...subjectIds)', { subjectIds: filter.subjectIds });
     }
-    if (filter.status !== undefined) {
-      baseQb.andWhere('a.status = :status', { status: filter.status });
+    if (filter.statuses && filter.statuses.length > 0) {
+      baseQb.andWhere('a.status IN (:...statuses)', { statuses: filter.statuses });
     }
     if (filter.type !== undefined) {
       baseQb.andWhere('atl.defTypeId = :type', { type: filter.type });
